@@ -59,6 +59,7 @@ fun HomeScreen(
     onOpenCamera: (Project, Building) -> Unit,
     onReview: (Project, Building) -> Unit,
     onSync: () -> Unit,
+    onSecurity: () -> Unit,
 ) {
     val ctx = LocalContext.current
     var waitingFor by remember { mutableStateOf<Building?>(null) }
@@ -97,7 +98,18 @@ fun HomeScreen(
                 .statusBarsPadding()
                 .padding(horizontal = 16.dp, vertical = 14.dp)
         ) {
-            Text("Site Photos", color = Color.White, fontSize = 22.sp, fontWeight = FontWeight.Bold)
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    "Site Photos",
+                    color = Color.White,
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.weight(1f),
+                )
+                TextButton(onClick = onSecurity, enabled = !vm.syncing) {
+                    Text("🔒 Security", color = Color.White)
+                }
+            }
             Text(
                 if (vm.driveConnected) "Google Drive connected  •  ${AppConfig.DRIVE_ROOT_FOLDER}"
                 else "Google Drive not connected yet – press Sync to connect",

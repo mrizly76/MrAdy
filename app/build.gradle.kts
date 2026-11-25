@@ -69,6 +69,10 @@ dependencies {
     implementation("androidx.concurrent:concurrent-futures-ktx:1.2.0")
     implementation("androidx.exifinterface:exifinterface:1.3.7")
 
+    // Fingerprint / face unlock
+    implementation("androidx.biometric:biometric:1.1.0")
+    implementation("androidx.fragment:fragment-ktx:1.8.5")
+
     // Google account authorization for Drive
     implementation("com.google.android.gms:play-services-auth:21.3.0")
 

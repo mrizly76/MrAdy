@@ -23,24 +23,24 @@ object AppConfig {
     val projects: List<Project> = listOf(
         Project(
             code = "219",
-            name = "219 – Address Hotel",
-            driveFolder = "219 - Address Hotel",
+            name = "219 – Address Hotel & SA",
+            driveFolder = "219 - Address Hotel & SA",
             buildings = listOf(
-                Building("B1", "Building 1"),
-                Building("B2", "Building 2"),
-                Building("B3", "Building 3"),
-                Building("B4", "Building 4"),
+                Building("H01", "H01"),
+                Building("H02", "H02"),
+                Building("R03", "R03"),
+                Building("R04", "R04"),
             ),
         ),
         Project(
             code = "220",
-            name = "220 – Ritz-Carlton",
-            driveFolder = "220 - Ritz-Carlton",
+            name = "220 – Ritz Hotel & BR",
+            driveFolder = "220 - Ritz Hotel & BR",
             buildings = listOf(
-                Building("B5", "Building 5"),
-                Building("B6", "Building 6"),
-                Building("B7", "Building 7"),
-                Building("B8", "Building 8"),
+                Building("H04", "H04"),
+                Building("H05", "H05"),
+                Building("R05", "R05"),
+                Building("R09", "R09"),
             ),
         ),
     )

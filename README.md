@@ -18,18 +18,27 @@ Take site photos per **Project (219 / 220)** and **Building**, keep them hidden 
 ```
 My Drive/
 └── Site Photos - Projects 219 & 220/
-    ├── 219 - Address Hotel/
-    │   ├── Building 1/
+    ├── 219 - Address Hotel & SA/
+    │   ├── H01/
     │   │   └── 2026-11-25/
-    │   │       ├── 219_B1_20261125_143005_123.jpg
+    │   │       ├── 219_H01_20261125_143005_123.jpg
     │   │       └── ...
-    │   └── Building 2 ... 4/
-    └── 220 - Ritz-Carlton/
-        └── Building 5 ... 8/
+    │   └── H02, R03, R04/
+    └── 220 - Ritz Hotel & BR/
+        └── H04, H05, R05, R09/
 ```
 
 The app uses the limited `drive.file` permission: it can only see/create its own folder and photos,
 not the rest of your Drive.
+
+## Security (PIN + fingerprint)
+
+- First launch: create a 4-digit PIN, then choose whether to unlock with fingerprint.
+- The app asks for the PIN / fingerprint every time it is opened, and again after 1 minute in the background.
+- 5 wrong PINs → 30 s wait (doubles with further wrong tries).
+- Change PIN or turn fingerprint on/off: **🔒 Security** on the home screen.
+- Forgot PIN: phone Settings › Apps › Site Photos › Storage › Clear storage
+  (also deletes photos not synced yet – sync first).
 
 ## Change project / building names
 

@@ -38,6 +38,11 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     var syncTotal by mutableIntStateOf(0)
         private set
 
+    /** App lock: locked on every fresh start (the PIN screen is shown first). */
+    var locked by mutableStateOf(true)
+    var needsPinSetup by mutableStateOf(false)
+    var backgroundSince = 0L
+
     var message by mutableStateOf<String?>(null)
     var error by mutableStateOf<String?>(null)
 
