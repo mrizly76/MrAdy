@@ -30,6 +30,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -60,6 +61,7 @@ fun HomeScreen(
     onReview: (Project, Building) -> Unit,
     onSync: () -> Unit,
     onSecurity: () -> Unit,
+    onChooseAccount: () -> Unit,
 ) {
     val ctx = LocalContext.current
     var waitingFor by remember { mutableStateOf<Building?>(null) }
@@ -111,8 +113,7 @@ fun HomeScreen(
                 }
             }
             Text(
-                if (vm.driveConnected) "Google Drive connected  •  ${AppConfig.DRIVE_ROOT_FOLDER}"
-                else "Google Drive not connected yet – press Sync to connect",
+                "Drive folder: ${AppConfig.DRIVE_ROOT_FOLDER}",
                 color = Color.White.copy(alpha = 0.8f),
                 fontSize = 12.sp,
             )
@@ -233,6 +234,30 @@ fun HomeScreen(
                     Text(it, color = Color(0xFF2E7D32), fontSize = 13.sp)
                     Spacer(Modifier.height(8.dp))
                 }
+                // Google account to upload to
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Column(Modifier.weight(1f)) {
+                        Text("Upload to Google account", fontSize = 11.sp, color = Color.Gray)
+                        Text(
+                            vm.accountEmail ?: "Not signed in",
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = if (vm.accountEmail == null) Color(0xFFC62828) else Color.Unspecified,
+                            maxLines = 1,
+                        )
+                        if (vm.accountEmail != null) {
+                            Text(
+                                if (vm.driveConnected) "✓ Drive access allowed" else "Drive access not allowed yet",
+                                fontSize = 11.sp,
+                                color = if (vm.driveConnected) Color(0xFF2E7D32) else Color.Gray,
+                            )
+                        }
+                    }
+                    OutlinedButton(onClick = onChooseAccount, enabled = !vm.syncing) {
+                        Text(if (vm.accountEmail == null) "Sign in" else "Change account")
+                    }
+                }
+                Spacer(Modifier.height(10.dp))
                 if (vm.syncing) {
                     Text("Uploading ${vm.syncDone} of ${vm.syncTotal} …", fontSize = 13.sp)
                     Spacer(Modifier.height(6.dp))

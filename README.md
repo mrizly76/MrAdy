@@ -9,8 +9,10 @@ Take site photos per **Project (219 / 220)** and **Building**, keep them hidden 
 2. Tap a **building** → the camera opens → take as many photos as you need → **‹ Done**.
 3. Photos wait inside the app (private storage — not in Gallery / Google Photos).
    The counter on each building shows how many are waiting. *Review / delete* lets you remove bad shots.
-4. Press **SYNC TO GOOGLE DRIVE**. First time only, choose your Google account and allow access.
-5. Each photo is uploaded, then deleted from the phone. If the internet drops, nothing is lost —
+4. Press **Sign in** (bottom of the home screen) and choose the Google account whose Drive should receive the photos,
+   then allow access. Use **Change account** any time to upload to a different Google Drive.
+5. Press **SYNC TO GOOGLE DRIVE**.
+6. Each photo is uploaded, then deleted from the phone. If the internet drops, nothing is lost —
    the remaining photos stay in the app; press Sync again.
 
 ### Google Drive folder structure (created automatically)

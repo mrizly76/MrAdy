@@ -1,5 +1,7 @@
 package com.sitephotos.app
 
+import android.accounts.Account
+import android.accounts.AccountManager
 import android.app.Activity
 import android.os.Bundle
 import androidx.activity.SystemBarStyle
@@ -81,17 +83,64 @@ class MainActivity : FragmentActivity() {
                 val auth = Identity.getAuthorizationClient(this)
                     .getAuthorizationResultFromIntent(result.data)
                 val token = auth.accessToken
-                if (token != null) vm.sync(token)
-                else vm.showError("Google did not return access. Please try Sync again.")
+                if (token != null) onToken(token)
+                else vm.showError("Google did not return access. Please try again.")
             } catch (e: ApiException) {
                 vm.showError("Google authorization failed (code ${e.statusCode}).")
             }
         }
 
-    /** Gets a fresh Drive access token (asks the user to pick an account the first time), then syncs. */
+    /** true = upload after authorization; false = only connect (sign in) the account. */
+    private var syncAfterAuth = true
+
+    private fun onToken(token: String) {
+        if (syncAfterAuth) {
+            vm.sync(token)
+        } else {
+            vm.markConnected()
+            vm.message = "Connected: photos will upload to ${vm.accountEmail}"
+            vm.error = null
+        }
+    }
+
+    /** Android's own "Choose an account" screen (also lets you add a new Google account). */
+    private val accountPicker =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            val email = result.data?.getStringExtra(AccountManager.KEY_ACCOUNT_NAME)
+            if (result.resultCode == Activity.RESULT_OK && email != null) {
+                vm.setAccount(email)
+                authorize()
+            }
+        }
+
+    /** Button "Sign in / Change account": pick account, then grant Drive access (no upload). */
+    private fun chooseAccount() {
+        syncAfterAuth = false
+        openAccountPicker()
+    }
+
+    private fun openAccountPicker() {
+        val current = vm.accountEmail?.let { Account(it, "com.google") }
+        val intent = AccountManager.newChooseAccountIntent(
+            current, null, arrayOf("com.google"),
+            "Choose the Google account whose Drive will receive the photos",
+            null, null, null,
+        )
+        accountPicker.launch(intent)
+    }
+
+    /** Sync button: if no account chosen yet, ask for one first, then upload. */
     private fun startSync() {
+        syncAfterAuth = true
+        if (vm.accountEmail == null) openAccountPicker() else authorize()
+    }
+
+    /** Gets a fresh Drive access token for the chosen account (asks permission the first time). */
+    private fun authorize() {
+        val email = vm.accountEmail ?: return
         val request = AuthorizationRequest.builder()
             .setRequestedScopes(listOf(driveScope))
+            .setAccount(Account(email, "com.google"))
             .build()
         Identity.getAuthorizationClient(this)
             .authorize(request)
@@ -101,8 +150,8 @@ class MainActivity : FragmentActivity() {
                     authLauncher.launch(IntentSenderRequest.Builder(pending.intentSender).build())
                 } else {
                     val token = result.accessToken
-                    if (token != null) vm.sync(token)
-                    else vm.showError("Google did not return access. Please try Sync again.")
+                    if (token != null) onToken(token)
+                    else vm.showError("Google did not return access. Please try again.")
                 }
             }
             .addOnFailureListener { e ->
@@ -159,6 +208,7 @@ class MainActivity : FragmentActivity() {
                         onOpenCamera = { p, b -> screen = Screen.Camera(p, b) },
                         onReview = { p, b -> screen = Screen.Review(p, b) },
                         onSync = { startSync() },
+                        onChooseAccount = { chooseAccount() },
                         onSecurity = { screen = Screen.Security },
                     )
                     Screen.Security -> SecurityScreen(

@@ -31,6 +31,18 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     var driveConnected by mutableStateOf(prefs.getBoolean("drive_connected", false))
         private set
 
+    /** Google account the photos are uploaded to (null = not chosen yet). */
+    var accountEmail by mutableStateOf(prefs.getString("account", null))
+        private set
+
+    fun setAccount(email: String) {
+        if (email != accountEmail) {
+            driveConnected = false
+            prefs.edit().putString("account", email).putBoolean("drive_connected", false).apply()
+        }
+        accountEmail = email
+    }
+
     var syncing by mutableStateOf(false)
         private set
     var syncDone by mutableIntStateOf(0)
@@ -107,7 +119,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
                         }
                     }
                 }
-                message = "Done: $syncTotal photo(s) uploaded to Google Drive › ${AppConfig.DRIVE_ROOT_FOLDER}"
+                message = "Done: $syncTotal photo(s) uploaded to $accountEmail › ${AppConfig.DRIVE_ROOT_FOLDER}"
             } catch (e: DriveUploader.AuthExpiredException) {
                 error = "Google sign-in expired. Press Sync again. ($syncDone of $syncTotal uploaded; the rest are safe in the app.)"
             } catch (e: Exception) {
