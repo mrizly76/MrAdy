@@ -2,7 +2,11 @@ name: Build APK
 
 on:
   push:
+    branches: [main]
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   build:
@@ -22,3 +26,16 @@ jobs:
         with:
           name: SitePhotos-219-220-apk
           path: app/build/outputs/apk/release/*.apk
+      - name: Save APK to the "apk" branch
+        run: |
+          mkdir /tmp/out
+          cp app/build/outputs/apk/release/*.apk /tmp/out/SitePhotos-219-220.apk
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git checkout --orphan apk
+          git rm -rf -q .
+          git clean -fdxq
+          cp /tmp/out/SitePhotos-219-220.apk .
+          git add SitePhotos-219-220.apk
+          git commit -q -m "APK build ${GITHUB_SHA::7}"
+          git push -f origin apk
